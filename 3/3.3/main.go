@@ -26,7 +26,6 @@ const (
 	max = 500	
 	colorMin = 0x0000ff
 	colorMax = 0xff0000
-	colorAvg = 0xffffff
 )
 
 var (
@@ -85,10 +84,9 @@ func f(x, y float64) float64 {
 }
 
 func setColor(z float64) {
-	color = colorAvg
 	if z < 0 {
 		color = colorMin
-	} else if z > 0 {
+	} else {
 		color = colorMax
 	}
 }
