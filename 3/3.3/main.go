@@ -17,16 +17,25 @@ import (
 const (
 	width, height = 600, 300
 	cells = 100
-	xyrange = 30.0
+	xyrange = 40.0
 	xyscale = width/2/xyrange
 	zscale = height*0.4
 	angle = math.Pi/6
+
+	min = 50
+	max = 500	
+	colorMin = 0x0000ff
+	colorMax = 0xff0000
+	colorAvg = 0xffffff
 )
 
-var sin30, cos30 = math.Sin(angle), math.Cos(angle)
+var (
+		sin30, cos30 = math.Sin(angle), math.Cos(angle)
+		color int
+)
 
 func main() {
-	fmt.Printf("<svg xmlns='http://www.w3.org/2000/svg' style='stroke: grey; fill: white; stroke-width: 0.7' width='%d' height='%d'>\n", width, height)
+	fmt.Printf("<svg xmlns='http://www.w3.org/2000/svg' style='stroke: grey; stroke-width: 0.7' width='%d' height='%d'>\n", width, height)
 	for i := 0; i < cells; i++ {
 		for j := 0; j < cells; j++ {
 			ax, ay, err := corner(i+1, j)
@@ -45,7 +54,7 @@ func main() {
 			if err != nil {
 				continue
 			}
-			fmt.Printf("<polygon points='%g,%g %g,%g %g,%g %g,%g'/>\n", ax, ay, bx, by, cx, cy, dx, dy)
+			fmt.Printf("<polygon points='%g,%g %g,%g %g,%g %g,%g' style='fill:#%06x'/>\n", ax, ay, bx, by, cx, cy, dx, dy, color)
 		}
 		
 	}
@@ -56,7 +65,9 @@ func corner(i, j int) (float64, float64, error) {
 	x := xyrange * (float64(i)/cells - 0.5)
 	y := xyrange * (float64(j)/cells - 0.5)
 	z := f(x,y)
-	
+
+	setColor(z)
+
 	sx := width/2 + (x-y)*cos30*xyscale
 	sy := height/2 + (x+y)*sin30*xyscale - z*zscale
 
@@ -71,4 +82,13 @@ func f(x, y float64) float64 {
 	r := math.Hypot(x, y)
 	
 	return math.Sin(r)/r
+}
+
+func setColor(z float64) {
+	color = colorAvg
+	if z < 0 {
+		color = colorMin
+	} else if z > 0 {
+		color = colorMax
+	}
 }
