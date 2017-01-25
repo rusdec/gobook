@@ -21,33 +21,48 @@ import (
 )
 
 const (
-	width, height = 600, 300
+	widthDefault, heightDefault = 100.0, 100.0
+	sizeMax = 800.0
+	sizeMin = 100.0
 	cells = 100
 	xyrangeDefault = 40.0
-	zscale = height*0.4
 	angle = math.Pi/6
 
-	min = 50
-	max = 500	
-	colorMin = 0x0000ff
-	colorMax = 0xff0000
+	colorMinDefault = 0xffffff
+	colorMaxDefault = 0xffffff
 )
 
 var (
 		sin30, cos30 = math.Sin(angle), math.Cos(angle)
-		color int
-		xyscale, xyrange float64
+		color int64
+		xyscale, xyrange, zscale float64
+		colorMin, colorMax int64
+		width, height float64
 )
 
 func Polygon(w http.ResponseWriter, r *http.Request) {
-	val, err := strconv.ParseFloat(r.URL.Query().Get("xyrange"), 64)
+	var err error
+
+	xyrange, err = strconv.ParseFloat(r.URL.Query().Get("xyrange"), 64)
 	if err != nil {
 		xyrange = xyrangeDefault
-	} else {
-		xyrange = float64(val)
 	}
-	xyscale = width/2/xyrange
-	
+	colorMin, err = strconv.ParseInt(r.URL.Query().Get("colorMin"), 16, 64)
+	if err != nil {
+		colorMin = colorMinDefault
+	}
+	colorMax, err = strconv.ParseInt(r.URL.Query().Get("colorMax"), 16, 64)
+	if err != nil {
+		colorMax = colorMaxDefault
+	}
+	size, err := strconv.ParseFloat(r.URL.Query().Get("size"), 64)
+	if err != nil || size < sizeMin || size > sizeMax {
+		width = widthDefault
+		height = heightDefault
+	} else {
+		width = size
+		height = size
+	}
 	w.Header().Set("Content-Type", "image/svg+xml")
 	fmt.Fprintf(w, "<svg xmlns='http://www.w3.org/2000/svg' style='stroke: grey; stroke-width: 0.7' width='%d' height='%d'>\n", width, height)
 	for i := 0; i < cells; i++ {
@@ -80,6 +95,8 @@ func corner(i, j int) (float64, float64, error) {
 	y := xyrange * (float64(j)/cells - 0.5)
 	z := f(x,y)
 
+	xyscale = float64(width)/2/xyrange
+	zscale = height*0.4
 	setColor(z)
 
 	sx := width/2 + (x-y)*cos30*xyscale
