@@ -40,22 +40,30 @@ var (
 		width, height float64
 )
 
+func parseFloat64(r *http.Request, s string) (float64, error) {
+	return strconv.ParseFloat(r.URL.Query().Get(s), 64)
+}
+
+func parseInt64(r *http.Request, s string, base int) (int64, error) {
+	return strconv.ParseInt(r.URL.Query().Get(s), base, 64)
+}
+
 func Polygon(w http.ResponseWriter, r *http.Request) {
 	var err error
 
-	xyrange, err = strconv.ParseFloat(r.URL.Query().Get("xyrange"), 64)
+	xyrange, err = parseFloat64(r, "xyrange")
 	if err != nil {
 		xyrange = xyrangeDefault
 	}
-	colorMin, err = strconv.ParseInt(r.URL.Query().Get("colorMin"), 16, 64)
+	colorMin, err = parseInt64(r, "colorMin", 16)
 	if err != nil {
 		colorMin = colorMinDefault
 	}
-	colorMax, err = strconv.ParseInt(r.URL.Query().Get("colorMax"), 16, 64)
+	colorMax, err = parseInt64(r, "colorMax", 16)
 	if err != nil {
 		colorMax = colorMaxDefault
 	}
-	size, err := strconv.ParseFloat(r.URL.Query().Get("size"), 64)
+	size, err := parseFloat64(r, "size")
 	if err != nil || size < sizeMin || size > sizeMax {
 		width = widthDefault
 		height = heightDefault
