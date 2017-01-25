@@ -19,9 +19,9 @@ import (
 )
 
 const (
-	width, height = 600, 300
+	width, height = 800, 400
 	cells = 100
-	xyrange = 30.0
+	xyrange = 20.0
 	xyscale = width/2/xyrange
 	zscale = height*0.4
 	angle = math.Pi/6
@@ -74,5 +74,5 @@ func corner(i, j int) (float64, float64, error) {
 func f(x, y float64) float64 {
 	r := math.Hypot(x, y)
 	
-	return math.Sin(r)/r
+	return math.Sin(r)/math.Log(r)
 }
