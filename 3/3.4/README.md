@@ -14,3 +14,7 @@ w.Header().Set("ContentType", "image/svg+xml")
 localhost:2121/?xyrange=N
 
 где N - частота колебаний
+
+### Примечанние
+
+Ошибка в задании: заголовок нужен "Content-Type"
