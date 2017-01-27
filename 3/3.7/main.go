@@ -20,7 +20,7 @@ import (
 
 const (
 	xmin, ymin, xmax, ymax = -2, -2, +2, +2
-	width, height = 2100, 2100
+	width, height = 1200, 1200
 )
 
 func main() {
@@ -76,7 +76,7 @@ func mandelbrot(z complex128) ([3]uint16) {
 
 	for n := uint8(0); n < iterations; n++ {
 		v = cmplx.Pow(z, 4) - 1
-		if cmplx.Abs(v) > 2 {
+		if cmplx.Abs(v) >  2 {
 			return [3]uint16{16, colorMax, colorMax}
 		}
 	}
