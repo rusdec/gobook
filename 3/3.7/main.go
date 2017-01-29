@@ -67,17 +67,16 @@ func superSampling(x, y, x1, y1 float64) color.Color{
 
 func mandelbrot(z complex128) ([3]uint16) {
 	const (
-		iterations = 200
+		iterations = 50
 		contrast = 15
 	)
 	
-	var v complex128
 	var colorMax uint16 = 128
 
-	for n := uint8(0); n < iterations; n++ {
-		v = cmplx.Pow(z, 4) - 1
-		if cmplx.Abs(v) >  2 {
-			return [3]uint16{16, colorMax, colorMax}
+	for n := uint16(0); n < iterations; n++ {
+		z -= (z-1/cmplx.Pow(z, 3))/4
+		if cmplx.Abs(cmplx.Pow(z,4)-1) < 1e-6 {
+			return [3]uint16{16, colorMax-contrast*n, colorMax-contrast*n}
 		}
 	}
 	

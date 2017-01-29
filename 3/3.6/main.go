@@ -73,7 +73,7 @@ func mandelbrot(z complex128) ([3]uint16) {
 	var v complex128
 	var colorMax uint16 = 128
 
-	for n := uint8(0); n < iterations; n++ {
+	for n := 0; n < iterations; n++ {
 		v = v*v + z
 		if cmplx.Abs(v) > 2 {
 			return [3]uint16{16, colorMax, colorMax}
